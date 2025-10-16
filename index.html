@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>n8n: El Ascenso de un Unicornio de la Automatización</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #f9fafb;
+      --text-color: #111827;
+      --text-muted-color: #4b5563;
+      --text-muted-hover-color: #1f2937;
+      --card-bg: #ffffff;
+      --card-border: rgba(0, 0, 0, 0.05);
+      --grid-color: rgba(0, 0, 0, 0.05);
+      --timeline-node-border: #f9fafb;
+      --timeline-line-color: rgba(0, 0, 0, 0.1);
+      --footer-border-color: rgba(0, 0, 0, 0.1);
+      --toggle-hover-bg: #f3f4f6;
+      --nav-bg: rgba(249, 250, 251, 0.8);
+    }
+
+    html.dark {
+      --bg-color: #0a0a0a;
+      --text-color: #e5e7eb;
+      --text-muted-color: #9ca3af;
+      --text-muted-hover-color: #e5e7eb;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --grid-color: rgba(255, 255, 255, 0.05);
+      --timeline-node-border: #111827;
+      --timeline-line-color: rgba(255, 255, 255, 0.1);
+      --footer-border-color: rgba(255, 255, 255, 0.1);
+      --toggle-hover-bg: #1f2937;
+      --nav-bg: rgba(10, 10, 10, 0.8);
+    }
+
+    html {
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+    }
+    .hero-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 30%, rgba(168, 85, 247, 0) 100%);
+      filter: blur(100px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .bg-grid {
+      background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+      background-size: 2rem 2rem;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      backdrop-filter: blur(10px);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: #4f46e5;
+      border: 2px solid var(--timeline-node-border);
+      z-index: 1;
+      transition: border-color 0.3s ease;
+    }
+    .timeline-line {
+      position: absolute;
+      left: -14px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: var(--timeline-line-color);
+      transition: background-color 0.3s ease;
+    }
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    .fade-in-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .scroller {
+      max-width: 900px;
+      overflow: hidden;
+      -webkit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+      mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+    }
+    .scroller__inner {
+      display: flex;
+      gap: 2.5rem;
+      padding-block: 1rem;
+      animation: scroll 40s linear infinite;
+    }
+    @keyframes scroll {
+      to {
+        transform: translate(calc(-50% - 1.25rem));
+      }
+    }
+    .client-logo {
+      color: #6b7280;
+      transition: color 0.3s ease;
+      font-weight: 600;
+      font-size: 1.25rem;
+      white-space: nowrap;
+    }
+    .client-logo:hover {
+      color: var(--text-muted-hover-color);
+    }
+    .theme-toggle-button:hover {
+      background-color: var(--toggle-hover-bg);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+<nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md" style="background-color: var(--nav-bg);">
+  <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="#" class="text-xl font-bold">
+      <span class="gradient-text">n8n</span> Report
+    </a>
+    <div class="flex items-center gap-4">
+      <a href="#faq-section" class="text-sm font-semibold hover:text-indigo-400 transition-colors" style="color: var(--text-muted-color);">FAQ</a>
+      <button id="theme-toggle" type="button" class="theme-toggle-button p-2.5 rounded-lg text-sm text-gray-500">
+        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.95a1 1 0 101.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zM5 11a1 1 0 100-2H4a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="min-h-screen flex flex-col items-center justify-center text-center p-6 relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid [mask-image:linear-gradient(to_bottom,white_10%,transparent_90%)]"></div>
+  <div class="hero-glow"></div>
+  <div class="z-10">
+    <h1 class="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-tight">
+      n8n: El Ascenso de un
+      <span class="block gradient-text mt-2">Unicornio de la Automatización</span>
+    </h1>
+    <p class="mt-6 text-lg md:text-xl max-w-3xl mx-auto" style="color: var(--text-muted-color);">
+      Un análisis interactivo del crecimiento exponencial que está redefiniendo la inteligencia artificial en la empresa.
+    </p>
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+      <div class="stat-card p-6 fade-in-section">
+        <p class="text-sm" style="color: var(--text-muted-color);">Valoración</p>
+        <p class="text-4xl font-bold gradient-text" data-target="2500">0</p>
+        <p class="text-sm" style="color: var(--text-muted-color);">millones USD</p>
+      </div>
+      <div class="stat-card p-6 fade-in-section" style="transition-delay: 200ms;">
+        <p class="text-sm" style="color: var(--text-muted-color);">Serie C (Oct 2025)</p>
+        <p class="text-4xl font-bold gradient-text" data-target="180">0</p>
+        <p class="text-sm" style="color: var(--text-muted-color);">millones USD</p>
+      </div>
+      <div class="stat-card p-6 fade-in-section" style="transition-delay: 400ms;">
+        <p class="text-sm" style="color: var(--text-muted-color);">Financiación Total</p>
+        <p class="text-4xl font-bold gradient-text" data-target="260">0</p>
+        <p class="text-sm" style="color: var(--text-muted-color);">millones USD</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Client Carousel Section -->
+<section class="py-12 md:py-16 fade-in-section">
+  <div class="container mx-auto px-6 text-center">
+    <h3 class="text-lg mb-8" style="color: var(--text-muted-color);">Impulsando la innovación en empresas líderes</h3>
+    <div class="scroller mx-auto">
+      <div class="scroller__inner">
+        <span class="client-logo">Microsoft</span>
+        <span class="client-logo">Meta</span>
+        <span class="client-logo">Deutsche Telekom</span>
+        <span class="client-logo">NVIDIA</span>
+        <span class="client-logo">Amazon Web Services</span>
+        <span class="client-logo">Felicis</span>
+        <span class="client-logo">Sequoia Capital</span>
+        <!-- Duplicated for infinite effect -->
+        <span class="client-logo">Microsoft</span>
+        <span class="client-logo">Meta</span>
+        <span class="client-logo">Deutsche Telekom</span>
+        <span class="client-logo">NVIDIA</span>
+        <span class="client-logo">Amazon Web Services</span>
+        <span class="client-logo">Felicis</span>
+        <span class="client-logo">Sequoia Capital</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="container mx-auto px-6 py-16 md:py-24 space-y-20 md:space-y-28">
+
+  <!-- Executive Summary -->
+  <section class="max-w-4xl mx-auto fade-in-section">
+    <h2 class="text-3xl font-bold text-center mb-2 gradient-text">Resumen Ejecutivo</h2>
+    <p class="text-lg text-center mb-8" style="color: var(--text-muted-color);">La clave de una valoración de 2.5 mil millones de dólares.</p>
+    <div class="stat-card p-8 text-center text-lg leading-relaxed">
+      n8n, la plataforma de automatización de código abierto, se ha consolidado como un unicornio tecnológico. Su reciente Serie C de <span class="font-bold" style="color: var(--text-color);">$180M</span>, liderada por Accel y NVentures, eleva su valoración a <span class="font-bold" style="color: var(--text-color);">$2.5B</span>. Su enfoque en la orquestación flexible de IA y una interfaz visual accesible está democratizando la automatización avanzada, convirtiéndose en una herramienta estratégica indispensable para la innovación a escala.
+    </div>
+  </section>
+
+  <!-- 1. Introduction -->
+  <section class="max-w-4xl mx-auto fade-in-section">
+    <h2 class="text-3xl font-bold mb-4"><span class="gradient-text">1.</span> La Eclosión de n8n</h2>
+    <p class="text-lg mb-6" style="color: var(--text-muted-color);">Fundada en Berlín en 2019 por Jan Oberhauser, n8n emergió para desafiar el mercado de la automatización, transfiriendo el poder desde los proveedores propietarios hacia los equipos de desarrollo a través de su plataforma de código abierto. Evita el <span class="font-semibold text-indigo-400">vendor lock-in</span> y ofrece una alternativa flexible y potente, permitiendo a usuarios sin habilidades avanzadas de programación integrar miles de APIs y orquestar flujos de trabajo complejos.</p>
+  </section>
+
+  <!-- 2. Financial Trajectory -->
+  <section class="max-w-4xl mx-auto fade-in-section">
+    <h2 class="text-3xl font-bold mb-4"><span class="gradient-text">2.</span> Trayectoria Financiera y Consolidación</h2>
+    <p class="text-lg mb-12" style="color: var(--text-muted-color);">Las rondas de inversión no solo aportan capital, validan la visión. La participación de NVentures, el brazo de capital riesgo de NVIDIA, es un poderoso respaldo que posiciona a n8n como un componente crítico de la futura infraestructura de IA.</p>
+
+    <div class="relative pl-8">
+      <div class="timeline-line"></div>
+      <div class="space-y-12">
+        <!-- Timeline Items -->
+        <article class="relative timeline-item fade-in-section">
+          <p class="text-sm text-indigo-400 font-semibold">Marzo 2020</p>
+          <h3 class="text-xl font-bold">Financiación Semilla</h3>
+          <p class="text-2xl font-bold gradient-text">$1.5M</p>
+          <p style="color: var(--text-muted-color);">con Sequoia Capital, firstminute Capital</p>
+        </article>
+        <article class="relative timeline-item fade-in-section">
+          <p class="text-sm text-indigo-400 font-semibold">Abril 2011</p>
+          <h3 class="text-xl font-bold">Serie A (Tramo 1)</h3>
+          <p class="text-2xl font-bold gradient-text">$12M</p>
+          <p style="color: var(--text-muted-color);">con Felicis Ventures</p>
+        </article>
+        <article class="relative timeline-item fade-in-section">
+          <p class="text-sm text-indigo-400 font-semibold">Marzo 2025</p>
+          <h3 class="text-xl font-bold">Serie B</h3>
+          <p class="text-2xl font-bold gradient-text">$60M</p>
+          <p style="color: var(--text-muted-color);">con Highland Europe</p>
+        </article>
+        <article class="relative timeline-item fade-in-section">
+          <p class="text-sm text-indigo-400 font-semibold">Octubre 2025</p>
+          <h3 class="text-xl font-bold">Serie C</h3>
+          <p class="text-2xl font-bold gradient-text">$180M</p>
+          <p style="color: var(--text-muted-color);">con Accel, NVentures</p>
+        </article>
+      </div>
+    </div>
+    <div class="mt-12 text-center fade-in-section">
+      <p class="text-xl">Estatus de Unicornio alcanzado oficialmente el <span class="font-bold gradient-text">8 de agosto de 2025</span>.</p>
+    </div>
+  </section>
+
+  <!-- 3. Market Adoption -->
+  <section class="max-w-4xl mx-auto fade-in-section">
+    <h2 class="text-3xl font-bold mb-4"><span class="gradient-text">3.</span> Adopción y Posicionamiento</h2>
+    <p class="text-lg mb-12" style="color: var(--text-muted-color);">El éxito no se mide solo en financiación, sino en la tracción de su comunidad. n8n ha demostrado un crecimiento exponencial gracias a una estrategia de <span class="font-semibold text-indigo-400">product-led growth</span>.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+      <div class="stat-card p-6 fade-in-section">
+        <p class="text-5xl font-black gradient-text" data-target="6" data-suffix="x">0x</p>
+        <p class="mt-2" style="color: var(--text-muted-color);">Base de Usuarios</p>
+      </div>
+      <div class="stat-card p-6 fade-in-section" style="transition-delay: 150ms;">
+        <p class="text-5xl font-black gradient-text" data-target="10" data-suffix="x">0x</p>
+        <p class="mt-2" style="color: var(--text-muted-color);">Incremento de Ingresos</p>
+      </div>
+      <div class="stat-card p-6 fade-in-section" style="transition-delay: 300ms;">
+        <p class="text-5xl font-black gradient-text" data-target="700" data-suffix="k+">0k+</p>
+        <p class="mt-2" style="color: var(--text-muted-color);">Desarrolladores Activos</p>
+      </div>
+      <div class="stat-card p-6 fade-in-section" style="transition-delay: 450ms;">
+        <p class="text-5xl font-black gradient-text">Top 50</p>
+        <p class="mt-2" style="color: var(--text-muted-color);">Proyectos en GitHub</p>
+      </div>
+    </div>
+    <p class="text-lg mt-12" style="color: var(--text-muted-color);">En el espectro competitivo, n8n ocupa un punto óptimo: más flexible que herramientas <span class="font-semibold" style="color: var(--text-color);">no-code</span> (Zapier, Make) y menos complejo que soluciones empresariales monolíticas (ServiceNow, Copilot Studio), compitiendo directamente con Workato, Tray.io y Pipedream.</p>
+  </section>
+
+  <!-- 4. Digital Transformation Catalyst -->
+  <section class="max-w-4xl mx-auto fade-in-section">
+    <h2 class="text-3xl font-bold mb-4"><span class="gradient-text">4.</span> Catalizador de Autonomía Digital</h2>
+    <p class="text-lg mb-12" style="color: var(--text-muted-color);">El verdadero reto es la <span class="font-semibold text-indigo-400">orquestación</span>. n8n actúa como el tejido conectivo esencial para las empresas que dependen de una pila diversa de herramientas SaaS.</p>
+    <div class="space-y-8">
+      <div class="stat-card p-6 flex items-start gap-4 fade-in-section">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+        <div>
+          <h3 class="font-bold text-xl">Democratización del Desarrollo</h3>
+          <p class="mt-1" style="color: var(--text-muted-color);">Su plataforma visual basada en nodos rompe los silos entre ingenieros y analistas, acelerando radicalmente los ciclos de entrega.</p>
+        </div>
+      </div>
+      <div class="stat-card p-6 flex items-start gap-4 fade-in-section">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V3m0 18v-3M5.636 5.636L4.222 4.222m15.556 15.556L18.364 18.364M18.364 5.636L19.778 4.222m-15.556 15.556L5.636 18.364M12 16a4 4 0 100-8 4 4 0 000 8z" /></svg>
+        <div>
+          <h3 class="font-bold text-xl">Autonomía de IA</h3>
+          <p class="mt-1" style="color: var(--text-muted-color);">Permite desde automatizaciones supervisadas hasta sistemas autónomos complejos con gobernanza personalizada.</p>
+        </div>
+      </div>
+      <div class="stat-card p-6 flex items-start gap-4 fade-in-section">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.002l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.368a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
+        <div>
+          <h3 class="font-bold text-xl">Orquestación Integral</h3>
+          <p class="mt-1" style="color: var(--text-muted-color);">Conecta miles de APIs y servicios dispares, maximizando el ROI de todo el portafolio de software de una organización.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Conclusion -->
+  <section class="max-w-4xl mx-auto fade-in-section">
+    <h2 class="text-3xl font-bold mb-4"><span class="gradient-text">5.</span> La Visión a Futuro</h2>
+    <p class="text-lg mb-12" style="color: var(--text-muted-color);">La trayectoria de n8n señala una transición desde las suites monolíticas y propietarias hacia un ecosistema más componible y centrado en el desarrollador. Con los nuevos recursos, planean:</p>
+    <ul class="list-disc list-inside space-y-4 text-lg" style="color: var(--text-muted-color);">
+      <li>Expandir su vasto ecosistema de integraciones.</li>
+      <li>Empoderar a su comunidad para desarrollar, compartir y monetizar nodos personalizados.</li>
+      <li>Evolucionar la interfaz de usuario más allá de su canvas actual.</li>
+      <li>Facilitar una experiencia de implementación inicial aún más sencilla.</li>
+    </ul>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq-section" class="max-w-4xl mx-auto fade-in-section">
+    <h2 class="text-3xl font-bold text-center mb-2 gradient-text">Preguntas Frecuentes</h2>
+    <p class="text-lg text-center mb-12" style="color: var(--text-muted-color);">Respuestas rápidas a las dudas más comunes.</p>
+    <div class="space-y-4">
+      <div class="faq-item stat-card">
+        <button class="faq-question w-full flex justify-between items-center text-left p-6">
+          <span class="text-xl font-semibold">¿Qué es n8n?</span>
+          <svg class="w-6 h-6 shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="pb-6" style="color: var(--text-muted-color);">n8n es una plataforma de automatización de flujos de trabajo de código abierto. Permite a los usuarios, incluso sin conocimientos avanzados de programación, conectar miles de aplicaciones y APIs para automatizar procesos complejos de negocio mediante una interfaz visual basada en nodos.</p>
+        </div>
+      </div>
+      <div class="faq-item stat-card">
+        <button class="faq-question w-full flex justify-between items-center text-left p-6">
+          <span class="text-xl font-semibold">¿Qué significa que sea de "código abierto"?</span>
+          <svg class="w-6 h-6 shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="pb-6" style="color: var(--text-muted-color);">Significa que su código fuente es público y accesible para todos. Esto ofrece a los usuarios un nivel de flexibilidad, transparencia y personalización inalcanzable para las plataformas propietarias. Las empresas pueden evitar el "vendor lock-in", adaptar, ampliar y alojar la herramienta según sus necesidades específicas.</p>
+        </div>
+      </div>
+      <div class="faq-item stat-card">
+        <button class="faq-question w-full flex justify-between items-center text-left p-6">
+          <span class="text-xl font-semibold">¿Cómo se diferencia n8n de Zapier?</span>
+          <svg class="w-6 h-6 shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div class="faq-answer px-6">
+          <p class="pb-6" style="color: var(--text-muted-color);">n8n es significativamente más flexible y extensible que herramientas no-code como Zapier. Al ser de código abierto, ofrece un control granular y potencia de nivel empresarial sin el coste prohibitivo a escala que pueden generar los modelos de precios basados en tareas y de código cerrado de otras plataformas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="text-center py-12 mt-20" style="border-top: 1px solid var(--footer-border-color);">
+  <p style="color: var(--text-muted-color);">Informe Interactivo · Creado en 2025</p>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Theme Toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      if (localStorage.getItem('color-theme')) {
+        if (localStorage.getItem('color-theme') === 'light') {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('color-theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('color-theme', 'light');
+        }
+      } else {
+        if (document.documentElement.classList.contains('dark')) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('color-theme', 'light');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('color-theme', 'dark');
+        }
+      }
+    });
+
+    // FAQ Accordion
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(question => {
+      question.addEventListener('click', () => {
+        const answer = question.nextElementSibling;
+        const icon = question.querySelector('svg');
+
+        if (answer.style.maxHeight) {
+          answer.style.maxHeight = null;
+          icon.style.transform = 'rotate(0deg)';
+        } else {
+          answer.style.maxHeight = answer.scrollHeight + "px";
+          icon.style.transform = 'rotate(180deg)';
+        }
+      });
+    });
+
+
+    // Animated Counters
+    const speed = 200;
+
+    const animateCounter = (counter) => {
+      const target = +counter.dataset.target;
+      const suffix = counter.dataset.suffix || '';
+
+      const updateCount = () => {
+        const count = +counter.innerText.replace(suffix, '').replace(/,/g, '');
+        const inc = Math.ceil(target / speed);
+
+        if (count < target) {
+          const newCount = count + inc > target ? target : count + inc;
+          counter.innerText = newCount.toLocaleString('en-US') + suffix;
+          setTimeout(updateCount, 10);
+        } else {
+          counter.innerText = target.toLocaleString('en-US') + suffix;
+        }
+      };
+      updateCount();
+    };
+
+    // Intersection Observer for fade-in sections and counters
+    const sections = document.querySelectorAll('.fade-in-section');
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          const childCounters = entry.target.querySelectorAll('[data-target]');
+          childCounters.forEach(childCounter => {
+            if (!childCounter.classList.contains('animated')) {
+              animateCounter(childCounter);
+              childCounter.classList.add('animated');
+            }
+          })
+        }
+      });
+    }, {
+      rootMargin: '0px',
+      threshold: 0.1
+    });
+
+    sections.forEach(section => {
+      observer.observe(section);
+    });
+
+    // Initial hero counters animation on load
+    const heroCounters = document.querySelectorAll('header [data-target]');
+    heroCounters.forEach(counter => {
+      if (!counter.classList.contains('animated')) {
+        animateCounter(counter);
+        counter.classList.add('animated');
+      }
+    });
+  });
+</script>
+</body>
+</html>
+
